@@ -30,7 +30,7 @@ function setup() {
 }
 
 function draw() {
-  background(BACKGROUND_COLOR);
+  background(BACKGROUND_COLOR.levels);
 
   // Calculate the row and column of the cell that the mouse is currently over
   let row = floor(mouseY / CELL_SIZE);
