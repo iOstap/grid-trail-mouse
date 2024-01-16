@@ -19,7 +19,7 @@ let allNeighbors = [];
 
 function setup() {
   // Use the class selector to find the canvas container
-  let container = select('.canvas-container');
+  let container = selectAll('.canvas-container');
   
   // Create canvas inside the container
   let cnv = createCanvas(container.width, container.height);
