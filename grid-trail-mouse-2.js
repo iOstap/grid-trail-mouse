@@ -1,9 +1,9 @@
 // CONSTANTS
 const CELL_SIZE = 40;
-const COLOR_R = 142;
-const COLOR_G = 194;
+const COLOR_R = 0;
+const COLOR_G = 117;
 const COLOR_B = 255;
-const STARTING_ALPHA = 0;
+const STARTING_ALPHA = 200;
 const PROB_OF_NEIGHBOR = 0.5;
 const AMT_FADE_PER_FRAME = 5;
 const BORDER_RADIUS = 4;
@@ -16,30 +16,37 @@ let numCols;
 let currentRow = -2;
 let currentCol = -2;
 let allNeighbors = [];
+let graphicsArray = [];
 
 function setup() {
-  // Use the class selector to find the canvas container
-  let container = selectAll('.canvas-container');
-  
-  // Create canvas inside the container
-  let cnv = createCanvas(container.width, container.height);
-  cnv.parent(container);
-  
-  // Explicitly set canvas size
-  cnv.width = container.width;
-  cnv.height = container.height;
+  // Use the class selector to find all elements with class 'canvas-container'
+  let containers = selectAll('.canvas-container');
+
+  // Create a graphics object for each container
+  for (let i = 0; i < containers.length; i++) {
+    let graphics = createGraphics(containers[i].width, containers[i].height);
+    graphics.parent(containers[i]);
+
+    // Explicitly set graphics size
+    graphics.width = containers[i].width;
+    graphics.height = containers[i].height;
+
+    graphicsArray.push(graphics);
+  }
 
   colorWithAlpha = color(COLOR_R, COLOR_G, COLOR_B, STARTING_ALPHA);
   noFill();
   stroke(colorWithAlpha);
   strokeWeight(1);
-  numRows = Math.ceil(container.height / CELL_SIZE);
-  numCols = Math.ceil(container.width / CELL_SIZE);
+  numRows = Math.ceil(graphicsArray[0].height / CELL_SIZE);
+  numCols = Math.ceil(graphicsArray[0].width / CELL_SIZE);
 }
 
 function draw() {
-  // Clear the entire canvas (including the background)
-  clear();
+  // Clear all graphics objects (including the background)
+  for (let i = 0; i < graphicsArray.length; i++) {
+    graphicsArray[i].clear();
+  }
 
   // Calculate the row and column of the cell that the mouse is currently over
   let row = floor(mouseY / CELL_SIZE);
@@ -53,22 +60,24 @@ function draw() {
     allNeighbors.push(...getRandomNeighbors(row, col));
   }
 
-  // Use the calculated row and column to determine the position of the cell
-  let x = col * CELL_SIZE;
-  let y = row * CELL_SIZE;
+  // Draw a highlighted rectangle over the cell under the mouse cursor for each graphics
+  for (let i = 0; i < graphicsArray.length; i++) {
+    let x = col * CELL_SIZE;
+    let y = row * CELL_SIZE;
+    graphicsArray[i].stroke(colorWithAlpha);
+    graphicsArray[i].rect(x, y, CELL_SIZE, CELL_SIZE, BORDER_RADIUS);
+  }
 
-  // Draw a highlighted rectangle over the cell under the mouse cursor
-  stroke(colorWithAlpha);
-  rect(x, y, CELL_SIZE, CELL_SIZE, BORDER_RADIUS);
-
-  // Draw and update all neighbors
-  for (let neighbor of allNeighbors) {
-    let neighborX = neighbor.col * CELL_SIZE;
-    let neighborY = neighbor.row * CELL_SIZE;
-    // Update the opacity of the neighbor
-    neighbor.opacity = max(0, neighbor.opacity - AMT_FADE_PER_FRAME);
-    stroke(COLOR_R, COLOR_G, COLOR_B, neighbor.opacity);
-    rect(neighborX, neighborY, CELL_SIZE, CELL_SIZE, BORDER_RADIUS);
+  // Draw and update all neighbors for each graphics
+  for (let i = 0; i < graphicsArray.length; i++) {
+    for (let neighbor of allNeighbors) {
+      let neighborX = neighbor.col * CELL_SIZE;
+      let neighborY = neighbor.row * CELL_SIZE;
+      // Update the opacity of the neighbor
+      neighbor.opacity = max(0, neighbor.opacity - AMT_FADE_PER_FRAME);
+      graphicsArray[i].stroke(COLOR_R, COLOR_G, COLOR_B, neighbor.opacity);
+      graphicsArray[i].rect(neighborX, neighborY, CELL_SIZE, CELL_SIZE, BORDER_RADIUS);
+    }
   }
 
   // Remove neighbors with zero opacity
@@ -81,30 +90,4 @@ function getRandomNeighbors(row, col) {
   for (let dRow = -1; dRow <= 1; dRow++) {
     for (let dCol = -1; dCol <= 1; dCol++) {
       let neighborRow = row + dRow;
-      let neighborCol = col + dCol;
-      let isCurrentCell = dRow === 0 && dCol === 0;
-      let isInBounds =
-        neighborRow >= 0 &&
-        neighborRow < numRows &&
-        neighborCol >= 0 &&
-        neighborCol < numCols;
-
-      if (!isCurrentCell && isInBounds && Math.random() < PROB_OF_NEIGHBOR) {
-        neighbors.push({
-          row: neighborRow,
-          col: neighborCol,
-          opacity: 255,
-        });
-      }
-    }
-  }
-
-  return neighbors;
-}
-
-function windowResized() {
-  let container = select('.canvas-container');
-  resizeCanvas(container.width, container.height);
-  numRows = Math.ceil(container.height / CELL_SIZE);
-  numCols = Math.ceil(container.width / CELL_SIZE);
-}
+      let neighborCol = col + d
