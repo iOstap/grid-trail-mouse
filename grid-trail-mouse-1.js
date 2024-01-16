@@ -1,9 +1,9 @@
 // CONSTANTS
 const CELL_SIZE = 40;
-const COLOR_R = 0;
-const COLOR_G = 117;
+const COLOR_R = 142;
+const COLOR_G = 194;
 const COLOR_B = 255;
-const STARTING_ALPHA = 200;
+const STARTING_ALPHA = 0;
 const PROB_OF_NEIGHBOR = 0.5;
 const AMT_FADE_PER_FRAME = 5;
 const BORDER_RADIUS = 4;
@@ -24,6 +24,10 @@ function setup() {
   // Create canvas inside the container
   let cnv = createCanvas(container.width, container.height);
   cnv.parent(container);
+  
+  // Explicitly set canvas size
+  cnv.width = container.width;
+  cnv.height = container.height;
 
   colorWithAlpha = color(COLOR_R, COLOR_G, COLOR_B, STARTING_ALPHA);
   noFill();
