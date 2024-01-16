@@ -18,16 +18,19 @@ let currentCol = -2;
 let allNeighbors = [];
 
 function setup() {
-  let cnv = createCanvas(windowWidth, windowHeight);
-  cnv.style("position", "fixed");
-  cnv.style("inset", 0);
-  cnv.style("z-index", 1);
+  // Use the class selector to find the canvas container
+  let container = select('.canvas-container');
+  
+  // Create canvas inside the container
+  let cnv = createCanvas(container.width, container.height);
+  cnv.parent(container);
+
   colorWithAlpha = color(COLOR_R, COLOR_G, COLOR_B, STARTING_ALPHA);
   noFill();
   stroke(colorWithAlpha);
   strokeWeight(1);
-  numRows = Math.ceil(windowHeight / CELL_SIZE);
-  numCols = Math.ceil(windowWidth / CELL_SIZE);
+  numRows = Math.ceil(container.height / CELL_SIZE);
+  numCols = Math.ceil(container.width / CELL_SIZE);
 }
 
 function draw() {
@@ -96,7 +99,8 @@ function getRandomNeighbors(row, col) {
 }
 
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-  numRows = Math.ceil(windowHeight / CELL_SIZE);
-  numCols = Math.ceil(windowWidth / CELL_SIZE);
+  let container = select('.canvas-container');
+  resizeCanvas(container.width, container.height);
+  numRows = Math.ceil(container.height / CELL_SIZE);
+  numCols = Math.ceil(container.width / CELL_SIZE);
 }
