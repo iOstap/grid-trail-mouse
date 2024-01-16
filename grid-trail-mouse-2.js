@@ -20,7 +20,7 @@ let graphicsArray = [];
 
 function setup() {
   // Use the class selector to find all elements with class 'canvas-container'
-  let containers = select('.canvas-container-1');
+  let containers = select('.canvas-container');
 
   // Create a graphics object for each container
   for (let i = 0; i < containers.length; i++) {
