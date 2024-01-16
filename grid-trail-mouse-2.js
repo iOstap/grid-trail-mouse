@@ -11,16 +11,11 @@ const BACKGROUND_COLOR = '#f0f1f9';
 
 // VARIABLES
 let colorWithAlpha;
-let numRows;
-let numCols;
-let currentRow = -2;
-let currentCol = -2;
-let allNeighbors = [];
 let graphicsArray = [];
 
 function setup() {
   // Use the class selector to find all elements with class 'canvas-container'
-  let containers = select('.canvas-container', '.canvas-container-1' );
+  let containers = selectAll('.canvas-container');
 
   // Create a graphics object for each container
   for (let i = 0; i < containers.length; i++) {
@@ -32,14 +27,16 @@ function setup() {
     graphics.height = containers[i].height;
 
     graphicsArray.push(graphics);
+
+    // Calculate numRows and numCols for each graphics object
+    graphics.numRows = Math.ceil(graphics.height / CELL_SIZE);
+    graphics.numCols = Math.ceil(graphics.width / CELL_SIZE);
   }
 
   colorWithAlpha = color(COLOR_R, COLOR_G, COLOR_B, STARTING_ALPHA);
   noFill();
   stroke(colorWithAlpha);
   strokeWeight(1);
-  numRows = Math.ceil(graphicsArray[0].height / CELL_SIZE);
-  numCols = Math.ceil(graphicsArray[0].width / CELL_SIZE);
 }
 
 function draw() {
@@ -48,51 +45,15 @@ function draw() {
     graphicsArray[i].clear();
   }
 
-  // Calculate the row and column of the cell that the mouse is currently over
-  let row = floor(mouseY / CELL_SIZE);
-  let col = floor(mouseX / CELL_SIZE);
-
-  // Check if the mouse has moved to a different cell
-  if (row !== currentRow || col !== currentCol) {
-    currentRow = row;
-    currentCol = col;
-    // Add new neighbors to the allNeighbors array
-    allNeighbors.push(...getRandomNeighbors(row, col));
-  }
-
   // Draw a highlighted rectangle over the cell under the mouse cursor for each graphics
   for (let i = 0; i < graphicsArray.length; i++) {
+    // Calculate the row and column of the cell that the mouse is currently over
+    let row = floor(mouseY / CELL_SIZE);
+    let col = floor(mouseX / CELL_SIZE);
+
     let x = col * CELL_SIZE;
     let y = row * CELL_SIZE;
     graphicsArray[i].stroke(colorWithAlpha);
     graphicsArray[i].rect(x, y, CELL_SIZE, CELL_SIZE, BORDER_RADIUS);
   }
-
-  // Draw and update all neighbors for each graphics
-  for (let i = 0; i < graphicsArray.length; i++) {
-    for (let neighbor of allNeighbors) {
-      let neighborX = neighbor.col * CELL_SIZE;
-      let neighborY = neighbor.row * CELL_SIZE;
-      // Update the opacity of the neighbor
-      neighbor.opacity = max(0, neighbor.opacity - AMT_FADE_PER_FRAME);
-      graphicsArray[i].stroke(COLOR_R, COLOR_G, COLOR_B, neighbor.opacity);
-      graphicsArray[i].rect(neighborX, neighborY, CELL_SIZE, CELL_SIZE, BORDER_RADIUS);
-    }
-  }
-
-  // Remove neighbors with zero opacity
-  allNeighbors = allNeighbors.filter((neighbor) => neighbor.opacity > 0);
-}
-
-function getRandomNeighbors(row, col) {
-  let neighbors = [];
-
-  for (let dRow = -1; dRow <= 1; dRow++) {
-    for (let dCol = -1; dCol <= 1; dCol++) {
-      let neighborRow = row + dRow;
-      let neighborCol = col + d
-
-  }
-
-  return neighbors;
 }
