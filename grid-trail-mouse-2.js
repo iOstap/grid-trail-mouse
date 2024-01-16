@@ -48,8 +48,8 @@ function draw() {
   // Draw a highlighted rectangle over the cell under the mouse cursor for each graphics
   for (let i = 0; i < graphicsArray.length; i++) {
     // Calculate the row and column of the cell that the mouse is currently over
-    let row = floor(mouseY / CELL_SIZE);
-    let col = floor(mouseX / CELL_SIZE);
+    let row = floor(graphicsArray[i].mouseY / CELL_SIZE);
+    let col = floor(graphicsArray[i].mouseX / CELL_SIZE);
 
     let x = col * CELL_SIZE;
     let y = row * CELL_SIZE;
@@ -57,3 +57,4 @@ function draw() {
     graphicsArray[i].rect(x, y, CELL_SIZE, CELL_SIZE, BORDER_RADIUS);
   }
 }
+
